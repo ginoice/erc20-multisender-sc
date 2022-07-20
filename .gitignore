@@ -1,0 +1,16 @@
+node_modules
+artifacts
+cache
+test_old
+coverage
+test_scripts
+coverage.json
+jsonignore
+bin
+/typechain-types/
+typechain
+
+.DS_Store
+.idea
+.env
+.env_test
