@@ -12,7 +12,7 @@ contract Airdrop is ERC20, Ownable {
 
     function makeAirdrop(address[] memory _addresses, uint256 _amount) public onlyOwner {
         for (uint32 i = 0; i < _addresses.length; i++) {
-            transfer(_addresses[i], _amount);
+            _transfer(msg.sender, _addresses[i], _amount);
         }
     }
 }
