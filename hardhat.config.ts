@@ -44,13 +44,13 @@ const config: HardhatUserConfig = {
     networks: {
         hardhat: {
             blockGasLimit: 12450000 * 100,
-            forking: {
-                url: FORK_URL,
-                // specifing blockNumber available only for AlchemyAPI
-                blockNumber: ALCHEMYAPI_URL ? BLOCK_NUMBER : undefined,
-            },
+            // forking: {
+            //     url: FORK_URL,
+            //     // specifing blockNumber available only for AlchemyAPI
+            //     blockNumber: ALCHEMYAPI_URL ? BLOCK_NUMBER : undefined,
+            // },
             accounts: {
-                count: 400,
+                count: 1001,
                 accountsBalance: ethers.utils.parseEther('10000').toString(),
             }
         },
