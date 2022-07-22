@@ -7,10 +7,8 @@ import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers"
 import type { TransactionResponse, TransactionReceipt, Log } from "@ethersproject/abstract-provider"
 import { assert } from "console"
 import {
-    MultiSender,
-    MultiSender__factory,
-    ERC20Mock,
-    ERC20Mock__factory,
+    Token,
+    Token__factory
 } from "../typechain"
 import { it } from "mocha"
 
@@ -57,44 +55,25 @@ function getUsersAddresses(users: SignerWithAddress[]) : string[] {
     return usersAddresses;
 }
 
-function getAmounts(addressesAmount: number) : BigNumber[] {
-    let amounts = []
-    for(let i: number = 0; i < addressesAmount; i++) {
-        let amount = 100;
-        let amountsEther = ether(amount.toString());
-        amounts.push(amountsEther);
-    }
-    return amounts;
-}
-
-describe("MultiSender", async () => {
+describe("Airdrop", async () => {
     let owner;
     let users: Array<SignerWithAddress>;
-    let ERC20MockFactory: ERC20Mock__factory;
-    let erc20Mock: ERC20Mock;
-    let MultiSenderFactory: MultiSender__factory;
-    let multiSender: MultiSender;
+    let AirdropFactory: Token__factory;
+    let airdrop: Token;
 
     beforeEach("Deploy the contract", async function () {
         [owner, ...users] = await ethers.getSigners();
 
-        ERC20MockFactory = new ERC20Mock__factory(owner);
-        erc20Mock = await ERC20MockFactory.deploy();
-        await erc20Mock.deployed();
-
-        MultiSenderFactory = new MultiSender__factory(owner);
-        multiSender = await MultiSenderFactory.deploy();
-        await multiSender.deployed();
-
+        AirdropFactory = new Token__factory(owner);
+        airdrop = await AirdropFactory.deploy("ERC20", "ERC20");
+        await airdrop.deployed();
     });
 
     it("airdrop to 1000 addresses", async function () {
         let airdropAddresses = getUsersAddresses(users.slice(0, 1000));
-        console.log("A")
-        expect(await multiSender.initialize(10000, 1)).to.ok;
-
-        //expect(await multiSender.setArrayLimit(10000)).to.ok;
-        expect(await multiSender.multiSend(erc20Mock.address, airdropAddresses, getAmounts(1000))).to.ok;
-        
+        expect(await airdrop.makeAirdrop(airdropAddresses, 100)).to.ok;
+        for(let i = 0; i < airdropAddresses.length; i++) {
+            expect(await airdrop.balanceOf(airdropAddresses[i])).to.equal(100);
+        }
     });
 });
